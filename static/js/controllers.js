@@ -1,11 +1,18 @@
 var ngAppControllers = angular.module('ngAppControllers', []);
 
+function getScope() {
+	return angular.element(('body div')).scope();
+}
+
 ngAppControllers.controller('networkController', ['$scope','$http','$routeParams', function ($scope, $http, $routeParams) {
 
 	$scope.hover_message = "";
+	$scope.player_data = {};
 	$scope.top_n_val = "";
 	$scope.search_player = "";
 	$scope.server_returner = "";
+	$scope.animation_speed = 1000;
+	$scope.keyed_data = {};
 
 	d3.xml("./static/img/network.svg", "image/svg+xml", function(error, xml) {
 		if (error) throw error;
@@ -19,11 +26,12 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 
 	$scope.svg_loaded = function(player) {
 
-		$scope.net.transition().duration(250).style('opacity',1);
-		$scope.net.selectAll('path').transition().duration(500).style('stroke-width',0).style('stroke-opacity',1);
+		$scope.keyed_data = {};
+		$scope.net.transition().duration(1000).style('opacity',1);
+		//$scope.net.selectAll('path').transition().duration(500).style('stroke-width',0).style('stroke-opacity',1);
 			$http({
 				method: 'GET',
-				url: 'https://dev16788.service-now.com/api/8380/tennis_iq/'+$scope.server_returner+'/'+player
+				url: 'https://dev16788.service-now.com/api/8380/tennis_iq/heatmap/'+player
 			}).then(function successCallback(response) {
 				$scope.player_data = response.data.result;
 				console.log($scope.player_data);
@@ -34,7 +42,14 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 	};
 
 	$scope.update_network = function() {
-		var this_dataset = $scope.player_data['top_'+$scope.top_n_val];
+		if ($scope.top_n_val.length==0) {
+				return;
+		}
+		if ($scope.server_returner.length==0) {
+				return;
+		}
+
+		var this_dataset = $scope.player_data[$scope.server_returner]['top_'+$scope.top_n_val];
 		for (var i = 0; i<this_dataset.length; i++) {
 			var this_score = this_dataset[i]
 			var this_width;
@@ -46,7 +61,10 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 				this_width = 1-this_score.prob_win;
 				this_ret_width = this_score.prob_win;
 			}*/
-			var stroke_multiplier = 50;
+			$scope.keyed_data['ser_p_'+this_score.score_self+'_'+this_score.score_oppt] = this_width;
+			$scope.keyed_data['ret_p_'+this_score.score_self+'_'+this_score.score_oppt] = this_ret_width;
+			$scope.keyed_data['zscore_'+this_score.score_self+'_'+this_score.score_oppt] = this_score.zscore;
+			var stroke_multiplier = 30;
 			var this_opacity = 1;//this_score.zscore/2;
 			/* TODO: Linear color scale on circle, not stroke*/
 			/* TOOD: When server is picked, 1- on reciever, and vice versa */
@@ -57,29 +75,52 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 			var this_rec_stroke = $scope.net.select('#rec_'+this_score.score_self+'_'+this_score.score_oppt);
 
 			this_rec_stroke
-				.transition().duration(1500).delay(i*30)
-				.style('stroke','#f1af8e')
-				.style('stroke-width',stroke_multiplier*(this_width)).transition().duration(1500).delay(1500+i*30)
+				.transition().duration($scope.animation_speed)//.delay(i*90)
+				.style('stroke','#FFCEA4')//.delay($scope.animation_speed+i*30)
+				.style('stroke-width',stroke_multiplier*(this_width)).transition().duration($scope.animation_speed)
 				.style('stroke-opacity',this_opacity);
 
 			this_ser_stroke
-				.transition().duration(1500).delay(i*30)
-				.style('stroke','#b0d5e1')
-				.style('stroke-width',stroke_multiplier*this_ret_width).transition().duration(1500).delay(1500+i*30)
+				.transition().duration($scope.animation_speed)//.delay(i*90)
+				.style('stroke','#DEE6E8')//.delay($scope.animation_speed+i*30)
+				.style('stroke-width',stroke_multiplier*this_ret_width).transition().duration($scope.animation_speed)
 				.style('stroke-opacity',this_opacity);
 
+			this_score_bubble.attr('zscore',this_score.zscore);
+			this_score_bubble.attr('probability',this_score.prob_win);
+			this_score_bubble.attr('player',this_score.player);
+
 			this_score_bubble
-				.transition().duration(2000)
-				.style('fill',$scope.zScore2Color(this_score.zscore));
+				.transition().duration($scope.animation_speed)
+				.style('fill',$scope.zScore2Color(this_score.zscore, true));
+
+			var this_zscore_key = 'ser_p_'+this_score.score_self+"_"+this_score.score_oppt;
 
 			//TODO: Need to pass all elements into a keyed angular object that can be accessed outside of scope
-			/*this_rec_stroke
+			this_score_bubble
 				.on('mouseover', function() {
-																			console.log(this_score.zscore);
-																			this_rec_stroke.style("stroke-opacity", this_rec_stroke.attr('stroke-opacity')*0.25);
-																			$scope.hover_message = "Zscore: " + this_score.zscore;
-																		});
+					var player_val = getScope().player_data.player;
+					var top_n_val = getScope().top_n_val;
+					var prob_val = Math.floor(100*this.getAttribute('probability'));
+					var zscore_val = this.getAttribute('zscore');
+					var percentile_val = Math.floor(zscore_val/2*100);
+					getScope().hover_anim = "animated fadeInDown";
+					if (zscore_val>1) {
+						getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point, which means he is better than " + percentile_val + "% of the top "+top_n_val+" players";
+					} else {
+						getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point, which means he is worse than " + (100-percentile_val) + "% of the top "+top_n_val+" players";
+					}
+					d3.selectAll('#'+this.id).transition().duration(200).style('r',40);
+					getScope().$apply();
+				});
 
+			this_score_bubble
+				.on('mouseout', function() {
+					getScope().hover_anim = "animated fadeOutUp";
+					d3.selectAll('#'+this.id).transition().duration(200).style('r',31.345188);
+					getScope().$apply();
+				});
+/*
 			this_ser_stroke
 				.on('mouseover', function() {
 																			this_rec_stroke.style("stroke-opacity", this_rec_stroke.attr('stroke-opacity')*0.25);
@@ -89,29 +130,39 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 		}
 	};
 
-	$scope.zScore2Color = function(zscore) {
-		var bad = [255,0,0,1];
-		var good = [0, 255, 75, 1];
+	$scope.zScore2Color = function(zscore, use_hsv) {
 		var bad_score = {
-			"r":bad[0],
-			"g":bad[1],
-			"b":bad[2],
-			"a":bad[3]
+			"r":$scope.bad[0],
+			"g":$scope.bad[1],
+			"b":$scope.bad[2],
+			"a":$scope.bad[3]
 		}
 		var good_score = {
-			"r":good[0],
-			"g":good[1],
-			"b":good[2],
-			"a":good[3]
+			"r":$scope.good[0],
+			"g":$scope.good[1],
+			"b":$scope.good[2],
+			"a":$scope.good[3]
 		}
+
+		var bad_hsv = rgb2hsv(parseInt(bad_score.r), parseInt(bad_score.g), parseInt(bad_score.b));
+		var good_hsv = rgb2hsv(parseInt(good_score.r), parseInt(good_score.g), parseInt(good_score.b));
 
 		var percent = zscore/2;
 
 		var return_color = {
-			"r":Math.floor(good_score.r + percent * (bad_score.r - good_score.r)),
-			"g":Math.floor(good_score.g + percent * (bad_score.g - good_score.g)),
-			"b":Math.floor(good_score.b + percent * (bad_score.b - good_score.b))
+			"r":Math.floor(bad_score.r + percent * (good_score.r - bad_score.r)),
+			"g":Math.floor(bad_score.g + percent * (good_score.g - bad_score.g)),
+			"b":Math.floor(bad_score.b + percent * (good_score.b - bad_score.b))
 		};
+		var return_color_hsv = {
+			"h":Math.floor(bad_hsv.h + percent * (good_hsv.h - bad_hsv.h)),
+			"s":Math.floor(bad_hsv.s + percent * (good_hsv.s - bad_hsv.s)),
+			"v":Math.floor(bad_hsv.v + percent * (good_hsv.v - bad_hsv.v))
+		}
+		if (use_hsv) {
+			var this_rgb = HSVtoRGB(return_color_hsv.h/360, return_color_hsv.s/100, return_color_hsv.v/100);
+			return $scope.rgbToHex(this_rgb.r, this_rgb.g, this_rgb.b);
+		}
 		return $scope.rgbToHex(return_color.r, return_color.g, return_color.b);
 	};
 
@@ -123,6 +174,132 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 	$scope.rgbToHex = function(r, g, b) {
 		return "#" + $scope.componentToHex(r) + $scope.componentToHex(g) + $scope.componentToHex(b);
 	}
+
+
+	$('#first_name').autocomplete({
+		serviceUrl: 'https://dev16788.service-now.com/api/8380/tennis_iq/playerlist',
+		deferRequestBy: 300,
+    transformResult: function(response) {
+        return {
+            suggestions: $.map(JSON.parse(response).result.suggestions, function(dataItem) {
+                return { value: dataItem.value, data: dataItem.data };
+            })
+        };
+    },
+		lookupLimit:10,
+		onSearchStart: function(query){$scope.loading=true},
+		onSearchComplete: function(query){$scope.loading=false},
+		onSelect: function (suggestion) {
+			$scope.search_player = suggestion.data;
+			$scope.$apply();
+			$scope.svg_loaded(suggestion.data);
+		},
+		showNoSuggestionNotice: true,
+		noSuggestionNotice: 'Sorry, no matching names'
+	});
+
+	function HSVtoRGB(h, s, v) {
+	    var r, g, b, i, f, p, q, t;
+	    if (arguments.length === 1) {
+	        s = h.s, v = h.v, h = h.h;
+	    }
+	    i = Math.floor(h * 6);
+	    f = h * 6 - i;
+	    p = v * (1 - s);
+	    q = v * (1 - f * s);
+	    t = v * (1 - (1 - f) * s);
+	    switch (i % 6) {
+	        case 0: r = v, g = t, b = p; break;
+	        case 1: r = q, g = v, b = p; break;
+	        case 2: r = p, g = v, b = t; break;
+	        case 3: r = p, g = q, b = v; break;
+	        case 4: r = t, g = p, b = v; break;
+	        case 5: r = v, g = p, b = q; break;
+	    }
+	    return {
+	        r: Math.round(r * 255),
+	        g: Math.round(g * 255),
+	        b: Math.round(b * 255)
+	    };
+	}
+
+	function rgb2hsv () {
+	    var rr, gg, bb,
+	        r = arguments[0] / 255,
+	        g = arguments[1] / 255,
+	        b = arguments[2] / 255,
+	        h, s,
+	        v = Math.max(r, g, b),
+	        diff = v - Math.min(r, g, b),
+	        diffc = function(c){
+	            return (v - c) / 6 / diff + 1 / 2;
+	        };
+
+	    if (diff == 0) {
+	        h = s = 0;
+	    } else {
+	        s = diff / v;
+	        rr = diffc(r);
+	        gg = diffc(g);
+	        bb = diffc(b);
+
+	        if (r === v) {
+	            h = bb - gg;
+	        }else if (g === v) {
+	            h = (1 / 3) + rr - bb;
+	        }else if (b === v) {
+	            h = (2 / 3) + gg - rr;
+	        }
+	        if (h < 0) {
+	            h += 1;
+	        }else if (h > 1) {
+	            h -= 1;
+	        }
+	    }
+	    return {
+	        h: Math.round(h * 360),
+	        s: Math.round(s * 100),
+	        v: Math.round(v * 100)
+	    };
+	}
+
+	function hexToRgb(hex) {
+	    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+	    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+	        return r + r + g + g + b + b;
+	    });
+
+	    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	    return result ? {
+	        r: parseInt(result[1], 16),
+	        g: parseInt(result[2], 16),
+	        b: parseInt(result[3], 16)
+	    } : null;
+	}
+
+	$scope.bad = [255, 91, 91,1];
+	$scope.good = [112, 220, 94, 1];
+	$scope.bad_color = "#FF5722";
+	$scope.good_color = "#4CAF50";
+	$scope.boxes = [];
+	$scope.numboxes = 50;
+	$scope.calcGradient = function() {
+		$scope.boxes = [];
+		$scope.boxes_hsv = [];
+
+		var this_bad_color = hexToRgb($scope.bad_color);
+		$scope.bad = [this_bad_color.r,this_bad_color.g,this_bad_color.b,1];
+		var this_good_color = hexToRgb($scope.good_color);
+		$scope.good = [this_good_color.r,this_good_color.g,this_good_color.b,1];
+
+		for (var i = 0; i<$scope.numboxes; i++) {
+			var thisScore = 2*(i/$scope.numboxes);
+			$scope.boxes.push({'background-color':$scope.zScore2Color(thisScore)});
+			$scope.boxes_hsv.push({'background-color':$scope.zScore2Color(thisScore, true)});
+		}
+	}
+	$scope.calcGradient();
 
 }])
 

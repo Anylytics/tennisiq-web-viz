@@ -1,34 +1,79 @@
-<style>
-	.select-wrapper {display:inline-block;}
-	h5 {text-align:center;}
-	input {text-align:center;}
-</style>
 
+<div class="hover-message {{hover_anim}}" >
+	{{hover_message}}
+</div>
 
-<h5>Stats for
-	<input ng-model="search_player"/> <br/>compared against the top
+<div class="header green darken-2 white-text">
+	<h3>Tennis Players - Situational Stats</h3>
+</div>
+
+<div class="header row green lighten-4">
+	<div class="col s12 m4">
+    <div class="input-field">
+      <input id="first_name" type="text" class="validate" ng-model="search_player">
+      <label for="first_name">Player Name</label>
+    </div>
+	</div>
+	<div class="col s12 m4">
+		<select ng-model="top_n_val" id="select_topn" ng-change="update_network()">
+			<option value="" disabled selected>Compared Against</option>
+			<option value="5">5</option>
+			<option value="10">10</option>
+			<option value="20">20</option>
+		</select>
+	</div>
+	<div class="col s12 m4">
+		<select ng-model="server_returner" id="select_ser_ret" ng-change="update_network()">
+			<option value="" disabled selected>When</option>
+			<option value="server">Serving</option>
+			<option value="returner">Returning</option>
+		</select>
+	</div>
+</div>
+
+<div class="color-scale" ng-show="server_returner">
+	<div ng-repeat="box_hsv in boxes_hsv" ng-style="box_hsv"></div>
+</div>
+
+<div ng-show="debug">
+Stats for
+	<input ng-model="search_player" type="text"/> compared against the top
 	<select ng-model="top_n_val" id="select_topn">
 		<option value="" disabled selected>Choose your option</option>
 		<option value="5">5</option>
 		<option value="10">10</option>
 		<option value="20">20</option>
 	</select>
-	players, <br/>when {{search_player}} is
+	players, when <u>{{search_player}}</u><span ng-show="search_player.length==0">_______</span> is
 	<select ng-model="server_returner" id="select_ser_ret">
 		<option value="" disabled selected>Choose your option</option>
 		<option value="server">Serving</option>
 		<option value="returner">Returning</option>
 	</select>
-</h5>
-<button ng-click="svg_loaded(search_player)">Search</button>
+</div>
+
+
+<a ng-show="debug" class="waves-effect waves-light btn search" ng-click="svg_loaded(search_player)">Search</a>
+<h5>Now viewing <span class="green-text">{{player_data.player}}</span> <span ng-show="!player_data.player">___________</span>
+		compared against the top <span class="green-text">{{top_n_val}}</span> <span ng-show="top_n_val.length==0">___________</span>
+		when he
+		is the <span class="green-text">{{server_returner}}</span> <span ng-show="server_returner.length==0">___________</span></h5>
 <div id="network-container">
 </div>
+<img class="hero-img animated slideInUp" ng-src="{{player_data.player_img}}"/>
 
-<div class="hover-message">
-	{{hover_message}}
-</div>
+<div ng-show="debug">
+Bad:  <input ng-model="bad_color"/> ({{bad_color}})
+<div class="gradient-boxes" ng-repeat="box in boxes" ng-style="box"></div>
+Good: <input ng-model="good_color"/> ({{good_color}})<br/>
+Steps:<input ng-model="numboxes"/>
+<button ng-click="calcGradient()">Calculate Gradient</button>
 
-DEBUG:
-{{top_n_val}}
 <br/>
-{{player_data}}
+<div class="gradient-boxes" ng-repeat="box_rgb in boxes" ng-style="box_rgb"></div>
+<br/>
+<div class="gradient-boxes" ng-repeat="box_hsv in boxes_hsv" ng-style="box_hsv"></div>
+</div>
+<!--{{top_n_val}}
+<br/>
+{{player_data}}-->

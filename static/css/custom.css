@@ -2,3 +2,86 @@
  * Author: Nabil Enayet October 2015
  */
 
+  .header > h3 {margin:0;}
+  .header {
+    padding:10px;
+  }
+ 	h5 {text-align:center;}
+ 	input {text-align:center;}
+ 	svg {width:100%;}
+ 	.search {
+     text-align: center;
+     margin: auto;
+     left: 0;
+     right: 0;
+     position: absolute;
+     width: 200px;
+ 	}
+ 	.gradient-boxes {width:25px;height:25px;display:inline-block;}
+ 	#network-container {
+    // margin-top: 50px;
+ 	}
+ 	.hover-message {
+     visibility:hidden;
+     position: absolute;
+     background-color: whitesmoke;
+     top: 20px;
+     left: 0;
+     right: 0;
+     width: 50vw;
+     margin: auto;
+     padding: 20px;
+     border-radius: 10px;
+     z-index: 100;
+     font-size: 1.2em;
+ 	}
+  .hover-message.animated {
+    visibility:visible;
+  }
+
+  li.disabled > span {
+    color: gainsboro;
+  }
+  .select-wrapper {
+    transform: translateY(14px);
+  }
+
+  .color-scale {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    width:100%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+  }
+
+  .color-scale div {
+    width: calc(100vw / 50);
+    height: calc(25px);
+    display:inline-block;
+  }
+
+  svg:not(:root) {
+      overflow: visible;
+  }
+
+  .hero-img {
+    opacity: 0.3;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    max-height:70vh;
+  }
+
+  .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+  .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+  .autocomplete-selected { background: #F0F0F0; }
+  .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+  .autocomplete-group { padding: 2px 5px; }
+  .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
