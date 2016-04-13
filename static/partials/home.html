@@ -4,17 +4,17 @@
 </div>
 
 <div class="header green darken-2 white-text">
-	<h3>Tennis Players - Situational Stats</h3>
+	<h3>Tennis Players - Situational Stats <div class="question green-text text-darken-2 right" ng-click="startHelp()"> <i class="material-icons">info_outline</i></div></h3>
 </div>
 
 <div class="header row green lighten-4">
-	<div class="col s12 m4">
+	<div class="col s12 m4" data-step="1" data-intro="Search for a player here">
     <div class="input-field">
       <input id="first_name" type="text" class="validate" ng-model="search_player">
       <label for="first_name">Player Name</label>
     </div>
 	</div>
-	<div class="col s12 m4">
+	<div class="col s12 m4" data-step="2" data-intro="Use this box to select the top n players you want to compare the player to. Eg: Selecting '5' will compare the searched for player's performance against the top 5 players">
 		<label for="select_topn">Compared To</label>
 		<select ng-model="top_n_val" id="select_topn" ng-change="update_network()">
 			<option value="" disabled selected>Compared Against</option>
@@ -23,7 +23,7 @@
 			<option value="20">20</option>
 		</select>
 	</div>
-	<div class="col s12 m4">
+	<div class="col s12 m4" data-step="3" data-intro="Finally, choose whether you would like to view statistics for when the chosen player is serving or receiving">
 		<label for="select_ser_ret">When</label>
 		<select ng-model="server_returner" id="select_ser_ret" ng-change="update_network()">
 			<option value="" disabled selected>When</option>

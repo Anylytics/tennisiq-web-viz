@@ -6,6 +6,7 @@ function getScope() {
 
 ngAppControllers.controller('networkController', ['$scope','$http','$routeParams', '$location', function ($scope, $http, $routeParams, $location) {
 
+	$scope.startHelp = function() {introJs().start();};
 	$scope.hover_message = "";
 	$scope.player_data = {};
 	$scope.top_n_val = "";
@@ -122,7 +123,7 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 			this_server_sbd_ser_color = '#5ca9c0';
 			this_server_sb_ret_color = '#e1e1e1';
 			this_server_sbd_ret_color = '#bfbfbf';
-			$scope.hero_img_side = {'right':'calc(98vw - 300px)','transform':'scaleX(-1)'};
+			$scope.hero_img_side = {'right':'calc(98vw - 300px)'};
 		}
 
 		d3.select("#player_server").text(server_name);
