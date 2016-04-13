@@ -2,7 +2,7 @@ var ngApp = angular.module('ngApp', ['ngRoute', 'ngAppControllers']);
 
 ngApp.config(['$routeProvider', function($routeProvider) {
     $routeProvider.
-      when('/home/:player', {
+      when('/home/:player/:topn/:ser_ret', {
         templateUrl: './static/partials/home.html',
         controller: 'networkController'
       }).

@@ -5,7 +5,7 @@ function getScope() {
 }
 
 ngAppControllers.controller('networkController', ['$scope','$http','$routeParams', function ($scope, $http, $routeParams) {
-
+	console.log($routeParams);
 	$scope.hover_message = "";
 	$scope.player_data = {};
 	$scope.top_n_val = "";
@@ -18,9 +18,19 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 		if (error) throw error;
 		document.getElementById('network-container').appendChild(xml.documentElement);
 		$scope.net = d3.select('#tennis_network');
-		$('select').material_select();
 		$scope.net.selectAll('path').transition().duration(500).style('stroke-width',0).style('stroke-opacity',1);
 		$scope.net.style('opacity',0);
+
+
+		if ($routeParams.ser_ret=='returner'||$routeParams.ser_ret=='server') {
+			$scope.top_n_val = $routeParams.topn;
+			$scope.search_player = $routeParams.player;
+			$scope.server_returner = $routeParams.ser_ret;
+			$scope.$apply();
+			$scope.svg_loaded($scope.search_player);
+		}
+
+		$('select').material_select();
 		//$scope.svg_loaded('Rafael Nadal');
 	});
 
@@ -35,6 +45,8 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 			}).then(function successCallback(response) {
 				$scope.player_data = response.data.result;
 				console.log($scope.player_data);
+				var player_name_array = $scope.player_data.player.split(' ');
+				d3.select("#current_player").text(player_name_array[player_name_array.length-1].toUpperCase());
 				$scope.update_network();
 			}, function errorCallback(response) {
 				console.log(response);
@@ -76,14 +88,14 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 
 			this_rec_stroke
 				.transition().duration($scope.animation_speed)//.delay(i*90)
-				.style('stroke','#FFCEA4')//.delay($scope.animation_speed+i*30)
-				.style('stroke-width',stroke_multiplier*(this_width)).transition().duration($scope.animation_speed)
+				.style('stroke','#EFEFEF')//.delay(i*15)
+				.style('stroke-width',stroke_multiplier*this_ret_width).transition().duration($scope.animation_speed)
 				.style('stroke-opacity',this_opacity);
 
 			this_ser_stroke
 				.transition().duration($scope.animation_speed)//.delay(i*90)
-				.style('stroke','#DEE6E8')//.delay($scope.animation_speed+i*30)
-				.style('stroke-width',stroke_multiplier*this_ret_width).transition().duration($scope.animation_speed)
+				.style('stroke','#95C9D6')//.delay(i*15)
+				.style('stroke-width',stroke_multiplier*this_width).transition().duration($scope.animation_speed)
 				.style('stroke-opacity',this_opacity);
 
 			this_score_bubble.attr('zscore',this_score.zscore);
@@ -93,6 +105,11 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 			this_score_bubble
 				.transition().duration($scope.animation_speed)
 				.style('fill',$scope.zScore2Color(this_score.zscore, true));
+
+			if (this_score.zscore==-1) {
+				this_score_bubble.transition().duration($scope.animation_speed)
+				.style('fill','gainsboro');
+			}
 
 			var this_zscore_key = 'ser_p_'+this_score.score_self+"_"+this_score.score_oppt;
 
@@ -105,19 +122,39 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 					var zscore_val = this.getAttribute('zscore');
 					var percentile_val = Math.floor(zscore_val/2*100);
 					getScope().hover_anim = "animated fadeInDown";
+					if (zscore_val!=-1) {
+						getScope().highlight_scale(zscore_val).height = "60px";
+						//getScope().highlight_scale(zscore_val).border = "solid 2px white";
+						getScope().highlight_scale(zscore_val)['border-top-right-radius'] = "25px";
+						getScope().highlight_scale(zscore_val)['border-top-left-radius'] = "25px";
+						getScope().highlight_scale(zscore_val)['box-shadow'] = "0px -10px 60px whitesmoke";
+						//getScope().highlight_scale(zscore_val).transform = "translateY(-30px)";
+					}
 					if (zscore_val>1) {
 						getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point, which means he is better than " + percentile_val + "% of the top "+top_n_val+" players";
 					} else {
 						getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point, which means he is worse than " + (100-percentile_val) + "% of the top "+top_n_val+" players";
 					}
-					d3.selectAll('#'+this.id).transition().duration(200).style('r',40);
+					if (zscore_val==-1) {
+						getScope().hover_message = "Not enough data for this game situation";
+					}
+					//d3.selectAll('#'+this.id).transition().duration(200).style('r',40);
 					getScope().$apply();
 				});
 
 			this_score_bubble
 				.on('mouseout', function() {
+					var zscore_val = this.getAttribute('zscore');
 					getScope().hover_anim = "animated fadeOutUp";
-					d3.selectAll('#'+this.id).transition().duration(200).style('r',31.345188);
+					if (zscore_val!=-1) {
+						getScope().highlight_scale(zscore_val).height = "25px";
+						//getScope().highlight_scale(zscore_val).border = "none";
+						getScope().highlight_scale(zscore_val)['box-shadow'] = "none";
+						getScope().highlight_scale(zscore_val)['border-top-right-radius'] = "0";
+						getScope().highlight_scale(zscore_val)['border-top-left-radius'] = "0";
+						//getScope().highlight_scale(zscore_val).transform = "translateY(0)";
+					}
+					//d3.selectAll('#'+this.id).transition().duration(200).style('r',31.345188);
 					getScope().$apply();
 				});
 /*
@@ -295,11 +332,24 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 
 		for (var i = 0; i<$scope.numboxes; i++) {
 			var thisScore = 2*(i/$scope.numboxes);
+			var style_object = {};
+			style_object["background-color"] = $scope.zScore2Color(thisScore, true);
+			style_object["height"] = "25px";
+			style_object["transform"] = "translateY(0)";
 			$scope.boxes.push({'background-color':$scope.zScore2Color(thisScore)});
-			$scope.boxes_hsv.push({'background-color':$scope.zScore2Color(thisScore, true)});
+			$scope.boxes_hsv.push(style_object);
 		}
 	}
 	$scope.calcGradient();
+
+	$scope.highlight_scale = function(zscore) {
+		if (zscore==-1) {
+			return;
+		}
+		var scale_index = Math.floor(($scope.numboxes-1)*zscore/2);
+		return $scope.boxes_hsv[scale_index];
+
+	}
 
 }])
 

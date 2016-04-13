@@ -8,7 +8,7 @@
   }
  	h5 {text-align:center;}
  	input {text-align:center;}
- 	svg {width:100%;}
+ 	svg {width:100%; height:calc(100vh - 300px);}
  	.search {
      text-align: center;
      margin: auto;
@@ -17,7 +17,7 @@
      position: absolute;
      width: 200px;
  	}
- 	.gradient-boxes {width:25px;height:25px;display:inline-block;}
+ 	.gradient-boxes {width:25px;height:25px;display:inline-block; }
  	#network-container {
     // margin-top: 50px;
  	}
@@ -43,7 +43,7 @@
     color: gainsboro;
   }
   .select-wrapper {
-    transform: translateY(14px);
+    transform: translateY(-5px);
   }
 
   .color-scale {
@@ -64,11 +64,16 @@
     width: calc(100vw / 50);
     height: calc(25px);
     display:inline-block;
+    transition: 0.2s all ease-in-out;
   }
 
   svg:not(:root) {
       overflow: visible;
   }
+
+  path[id*=path] {
+    pointer-events: none;
+  } 
 
   .hero-img {
     opacity: 0.3;
