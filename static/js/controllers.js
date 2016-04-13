@@ -4,8 +4,8 @@ function getScope() {
 	return angular.element(('body div')).scope();
 }
 
-ngAppControllers.controller('networkController', ['$scope','$http','$routeParams', function ($scope, $http, $routeParams) {
-	console.log($routeParams);
+ngAppControllers.controller('networkController', ['$scope','$http','$routeParams', '$location', function ($scope, $http, $routeParams, $location) {
+
 	$scope.hover_message = "";
 	$scope.player_data = {};
 	$scope.top_n_val = "";
@@ -13,6 +13,18 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 	$scope.server_returner = "";
 	$scope.animation_speed = 1000;
 	$scope.keyed_data = {};
+	$scope.just_searched = false;
+
+	$scope.search_history = [];
+
+	$scope.visit_history = function(history_object) {
+		console.log(history_object);
+		$scope.search_player = history_object.player;
+		$scope.top_n_val = history_object.topn;
+		$scope.server_returner = history_object.ser_ret;
+		$scope.just_searched = true;
+		$scope.svg_loaded($scope.search_player);
+	}
 
 	d3.xml("./static/img/network.svg", "image/svg+xml", function(error, xml) {
 		if (error) throw error;
@@ -39,19 +51,36 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 		$scope.keyed_data = {};
 		$scope.net.transition().duration(1000).style('opacity',1);
 		//$scope.net.selectAll('path').transition().duration(500).style('stroke-width',0).style('stroke-opacity',1);
-			$http({
-				method: 'GET',
-				url: 'https://dev16788.service-now.com/api/8380/tennis_iq/heatmap/'+player
-			}).then(function successCallback(response) {
-				$scope.player_data = response.data.result;
-				console.log($scope.player_data);
-				var player_name_array = $scope.player_data.player.split(' ');
-				d3.select("#current_player").text(player_name_array[player_name_array.length-1].toUpperCase());
-				$scope.update_network();
-			}, function errorCallback(response) {
-				console.log(response);
-			});
+		if (player!=$scope.player_data.player) {
+				$http({
+					method: 'GET',
+					url: 'https://dev16788.service-now.com/api/8380/tennis_iq/heatmap/'+player
+				}).then(function successCallback(response) {
+					$scope.player_data = response.data.result;
+					console.log($scope.player_data);
+					$scope.update_network();
+				}, function errorCallback(response) {
+					console.log(response);
+				});
+		} else {
+			$scope.update_network();
+		}
 	};
+
+	$scope.updateHistory = function(player,topn,ser_ret) {
+		if ($scope.just_searched) {
+			$scope.just_searched = false;
+		} else {
+			var hist_obj = {};
+			hist_obj.player = player;
+			hist_obj.topn = topn;
+			hist_obj.ser_ret = ser_ret;
+			if ($scope.search_history.length==5) {
+				$scope.search_history.shift();
+			}
+			$scope.search_history.push(hist_obj);
+		}
+	}
 
 	$scope.update_network = function() {
 		if ($scope.top_n_val.length==0) {
@@ -61,18 +90,56 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 				return;
 		}
 
+		$('select').material_select();
+		$location.search('player', $scope.player_data.player);
+		$location.search('topn', $scope.top_n_val);
+		$location.search('ser_ret', $scope.server_returner);
+
+		$scope.updateHistory($scope.player_data.player, $scope.top_n_val, $scope.server_returner);
+
+		var player_name_array = $scope.player_data.player.split(' ');
+		var server_name = 'OPPONENT';
+		var returner_name = player_name_array[player_name_array.length-1].toUpperCase();
+
+		var this_server_stroke_color = '#EFEFEF';
+		var this_returner_stroke_color = '#95C9D6';
+		var this_server_sb_ser_color = '#e1e1e1';
+		var this_server_sbd_ser_color = '#bfbfbf';
+		var this_server_sb_ret_color = '#b0d5e1';
+		var this_server_sbd_ret_color = '#5ca9c0';
+
+		if ($scope.server_returner=='server') {
+			server_name = player_name_array[player_name_array.length-1].toUpperCase();
+			returner_name = 'OPPONENT';
+			this_server_stroke_color = '#95C9D6';
+			this_returner_stroke_color = '#EFEFEF';
+			this_server_sb_ser_color = '#b0d5e1';
+			this_server_sbd_ser_color = '#5ca9c0';
+			this_server_sb_ret_color = '#e1e1e1';
+			this_server_sbd_ret_color = '#bfbfbf';
+		}
+
+		d3.select("#player_server").text(server_name);
+		d3.select("#player_returner").text(returner_name);
+		d3.select("#sb_ser_win").transition().duration($scope.animation_speed).style('fill',this_server_sb_ser_color);
+		d3.select("#sbd_ser_win").transition().duration($scope.animation_speed).style('fill',this_server_sbd_ser_color);
+		d3.select("#sb_ret_win").transition().duration($scope.animation_speed).style('fill',this_server_sb_ret_color);
+		d3.select("#sbd_ret_win").transition().duration($scope.animation_speed).style('fill',this_server_sbd_ret_color);
+		//e1e1e1,bfbfbf
+		//b0d5e1,5ca9c0
+
 		var this_dataset = $scope.player_data[$scope.server_returner]['top_'+$scope.top_n_val];
 		for (var i = 0; i<this_dataset.length; i++) {
 			var this_score = this_dataset[i]
 			var this_width;
 			var this_ret_width;
-			//if ($scope.server_returner=='server') {
+			if ($scope.server_returner=='server') {
 				this_width = this_score.prob_win;
 				this_ret_width = 1-this_score.prob_win;
-			/*} else {
+			} else {
 				this_width = 1-this_score.prob_win;
 				this_ret_width = this_score.prob_win;
-			}*/
+			}
 			$scope.keyed_data['ser_p_'+this_score.score_self+'_'+this_score.score_oppt] = this_width;
 			$scope.keyed_data['ret_p_'+this_score.score_self+'_'+this_score.score_oppt] = this_ret_width;
 			$scope.keyed_data['zscore_'+this_score.score_self+'_'+this_score.score_oppt] = this_score.zscore;
@@ -88,13 +155,13 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 
 			this_rec_stroke
 				.transition().duration($scope.animation_speed)//.delay(i*90)
-				.style('stroke','#EFEFEF')//.delay(i*15)
+				.style('stroke',this_returner_stroke_color)//.delay(i*15)
 				.style('stroke-width',stroke_multiplier*this_ret_width).transition().duration($scope.animation_speed)
 				.style('stroke-opacity',this_opacity);
 
 			this_ser_stroke
 				.transition().duration($scope.animation_speed)//.delay(i*90)
-				.style('stroke','#95C9D6')//.delay(i*15)
+				.style('stroke',this_server_stroke_color)//.delay(i*15)
 				.style('stroke-width',stroke_multiplier*this_width).transition().duration($scope.animation_speed)
 				.style('stroke-opacity',this_opacity);
 
@@ -123,11 +190,11 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 					var percentile_val = Math.floor(zscore_val/2*100);
 					getScope().hover_anim = "animated fadeInDown";
 					if (zscore_val!=-1) {
-						getScope().highlight_scale(zscore_val).height = "60px";
+						getScope().highlight_scale(zscore_val).height = "100px";
 						//getScope().highlight_scale(zscore_val).border = "solid 2px white";
 						getScope().highlight_scale(zscore_val)['border-top-right-radius'] = "25px";
 						getScope().highlight_scale(zscore_val)['border-top-left-radius'] = "25px";
-						getScope().highlight_scale(zscore_val)['box-shadow'] = "0px -10px 60px whitesmoke";
+						getScope().highlight_scale(zscore_val)['box-shadow'] = "0px 0px 5px white";
 						//getScope().highlight_scale(zscore_val).transform = "translateY(-30px)";
 					}
 					if (zscore_val>1) {
@@ -157,14 +224,9 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 					//d3.selectAll('#'+this.id).transition().duration(200).style('r',31.345188);
 					getScope().$apply();
 				});
-/*
-			this_ser_stroke
-				.on('mouseover', function() {
-																			this_rec_stroke.style("stroke-opacity", this_rec_stroke.attr('stroke-opacity')*0.25);
-																			$scope.hover_message = "Zscore: " + this_score.zscore;
-																		});
-																		*/
+
 		}
+		$('select').material_select();
 	};
 
 	$scope.zScore2Color = function(zscore, use_hsv) {

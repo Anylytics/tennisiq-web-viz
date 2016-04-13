@@ -64,6 +64,16 @@ Stats for
 </div>
 <img class="hero-img animated slideInUp" ng-src="{{player_data.player_img}}"/>
 
+<div class="history-container">
+	<div  class="history-item green lighten-4"
+				ng-repeat="search in search_history track by $index"
+				ng-click="visit_history(search)">
+		<span><i class="material-icons">replay</i>{{search.player}}</span>
+		<span> / {{search.topn}}</span>
+		<span> / {{search.ser_ret}}</span>
+	</div>
+</div>
+
 <div ng-show="debug">
 Bad:  <input ng-model="bad_color"/> ({{bad_color}})
 <div class="gradient-boxes" ng-repeat="box in boxes" ng-style="box"></div>
