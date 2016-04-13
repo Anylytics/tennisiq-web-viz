@@ -83,6 +83,9 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 	}
 
 	$scope.update_network = function() {
+		if ($scope.player_data.player.length==0) {
+			return;
+		}
 		if ($scope.top_n_val.length==0) {
 				return;
 		}
@@ -94,6 +97,8 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 		$location.search('player', $scope.player_data.player);
 		$location.search('topn', $scope.top_n_val);
 		$location.search('ser_ret', $scope.server_returner);
+
+		$scope.hero_img_side = {'right':'2vw'};
 
 		$scope.updateHistory($scope.player_data.player, $scope.top_n_val, $scope.server_returner);
 
@@ -117,6 +122,7 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 			this_server_sbd_ser_color = '#5ca9c0';
 			this_server_sb_ret_color = '#e1e1e1';
 			this_server_sbd_ret_color = '#bfbfbf';
+			$scope.hero_img_side = {'right':'calc(98vw - 300px)','transform':'scaleX(-1)'};
 		}
 
 		d3.select("#player_server").text(server_name);
@@ -190,10 +196,10 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 					var percentile_val = Math.floor(zscore_val/2*100);
 					getScope().hover_anim = "animated fadeInDown";
 					if (zscore_val!=-1) {
-						getScope().highlight_scale(zscore_val).height = "100px";
+						getScope().highlight_scale(zscore_val).width = "100px";
 						//getScope().highlight_scale(zscore_val).border = "solid 2px white";
 						getScope().highlight_scale(zscore_val)['border-top-right-radius'] = "25px";
-						getScope().highlight_scale(zscore_val)['border-top-left-radius'] = "25px";
+						getScope().highlight_scale(zscore_val)['border-bottom-right-radius'] = "25px";
 						getScope().highlight_scale(zscore_val)['box-shadow'] = "0px 0px 5px white";
 						//getScope().highlight_scale(zscore_val).transform = "translateY(-30px)";
 					}
@@ -214,11 +220,11 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 					var zscore_val = this.getAttribute('zscore');
 					getScope().hover_anim = "animated fadeOutUp";
 					if (zscore_val!=-1) {
-						getScope().highlight_scale(zscore_val).height = "25px";
+						getScope().highlight_scale(zscore_val).width = "25px";
 						//getScope().highlight_scale(zscore_val).border = "none";
 						getScope().highlight_scale(zscore_val)['box-shadow'] = "none";
 						getScope().highlight_scale(zscore_val)['border-top-right-radius'] = "0";
-						getScope().highlight_scale(zscore_val)['border-top-left-radius'] = "0";
+						getScope().highlight_scale(zscore_val)['border-bottom-right-radius'] = "0";
 						//getScope().highlight_scale(zscore_val).transform = "translateY(0)";
 					}
 					//d3.selectAll('#'+this.id).transition().duration(200).style('r',31.345188);
@@ -396,7 +402,7 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 			var thisScore = 2*(i/$scope.numboxes);
 			var style_object = {};
 			style_object["background-color"] = $scope.zScore2Color(thisScore, true);
-			style_object["height"] = "25px";
+			style_object["width"] = "25px";
 			style_object["transform"] = "translateY(0)";
 			$scope.boxes.push({'background-color':$scope.zScore2Color(thisScore)});
 			$scope.boxes_hsv.push(style_object);

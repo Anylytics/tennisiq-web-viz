@@ -6,6 +6,9 @@
   .header {
     padding:10px;
   }
+  .header {
+    box-shadow: 0 0 10px grey;
+  }
  	h5 {text-align:center;}
  	input {text-align:center;}
  	svg {width:100%; height:calc(100vh - 300px);}
@@ -48,23 +51,19 @@
 
   .color-scale {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    top: 200px;
     left: 0;
     margin: auto;
-    width:100%;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    left: 0;
+    width:29px;
+    border: solid 2px black;
     pointer-events: none;
     margin: auto;
   }
 
   .color-scale div {
-    width: calc(100vw / 50);
-    height: calc(25px);
-    display:inline-block;
+    height: calc(60vh / 50);
+    width: calc(25px);
+    //display:inline-block;
     transition: 0.2s all cubic-bezier(0.68, -0.55, 0.27, 1.55);
     pointer-events:none;
   }
@@ -81,9 +80,11 @@
     opacity: 0.3;
     position: absolute;
     bottom: 0;
-    right: 0;
+    //right: 5vw;
     z-index: -1;
     max-height:70vh;
+    width:300px;
+    transition: all 0.4s ease-in-out;
   }
 
   .history-container {
