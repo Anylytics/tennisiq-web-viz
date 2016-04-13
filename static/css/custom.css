@@ -17,7 +17,9 @@
     max-width:calc(95vw);
     left:0;
     right:0;
+    position:absolute;
     margin:auto;
+    z-index:-1;
   }
  	.search {
      text-align: center;
@@ -58,18 +60,18 @@
 
   .color-scale {
     position: absolute;
-    top: 200px;
+    top: 171px;
     left: 0;
     margin: auto;
     width:29px;
     //border: solid 2px black;
     pointer-events: none;
     margin: auto;
+    z-index:-1;
   }
 
   .color-scale div {
-    height: calc(60vh / 50);
-    width: calc(25px);
+    height: calc((100vh - 171px) / 50);
     //display:inline-block;
     transition: 0.2s all cubic-bezier(0.68, -0.55, 0.27, 1.55);
     pointer-events:none;
@@ -90,7 +92,7 @@
     //right: 5vw;
     z-index: -1;
     max-height:70vh;
-    width:300px;
+    max-width:300px;
     transition: all 0.4s ease-in-out;
   }
 
