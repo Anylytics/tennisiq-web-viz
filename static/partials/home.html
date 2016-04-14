@@ -33,8 +33,8 @@
 	</div>
 </div>
 
-<div class="color-scale" ng-show="server_returner">
-	<div ng-repeat="box_hsv in boxes_hsv" ng-style="box_hsv"></div>
+<div class="color-scale animated slideInLeft" ng-show="server_returner">
+	<div ng-repeat="box_hsv in boxes_hsv.slice().reverse()" ng-style="box_hsv"></div>
 </div>
 
 <div ng-show="debug">
@@ -60,7 +60,7 @@ Stats for
 		compared against the top <span class="green-text">{{top_n_val}}</span> <span ng-show="top_n_val.length==0">___________</span>
 		when he
 		is the <span class="green-text">{{server_returner}}</span> <span ng-show="server_returner.length==0">___________</span></h5>
-<div id="network-container">
+<div id="network-container" ng-class="svg_class">
 </div>
 <img class="hero-img animated slideInUp" ng-src="{{player_data.player_img}}" ng-style="hero_img_side"/>
 
