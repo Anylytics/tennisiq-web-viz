@@ -1,7 +1,7 @@
 /*!
  * Author: Nabil Enayet October 2015
  */
-
+body { overflow:hidden; }
   .header > h3 {margin:0;}
   .header {
     padding:10px;
@@ -103,6 +103,7 @@
       opacity:0.7;
       transform:translateY(-3px);
       transition:opacity 0.4s ease-in-out;
+      animation-delay:2s;
   }
   div.question:hover {
     opacity:1;
