@@ -16,7 +16,7 @@
 	</div>
 	<div class="col s12 m4" data-step="2" data-intro="Use this box to select the top n players you want to compare the player to. Eg: Selecting '5' will compare the searched for player's performance against the top 5 players">
 		<label for="select_topn">Compared To</label>
-		<select ng-model="top_n_val" id="select_topn" ng-change="update_network()">
+		<select ng-model="top_n_val" id="select_topn" ng-change="update_network()" value="{{top_n_val}}">
 			<option value="" disabled selected>Compared Against</option>
 			<option value="5">5</option>
 			<option value="10">10</option>
@@ -25,7 +25,7 @@
 	</div>
 	<div class="col s12 m4" data-step="3" data-intro="Finally, choose whether you would like to view statistics for when the chosen player is serving or receiving">
 		<label for="select_ser_ret">When</label>
-		<select ng-model="server_returner" id="select_ser_ret" ng-change="update_network()">
+		<select ng-model="server_returner" id="select_ser_ret" ng-change="update_network()" value="{{server_returner}}">
 			<option value="" disabled selected>When</option>
 			<option value="server">Serving</option>
 			<option value="returner">Returning</option>

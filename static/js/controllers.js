@@ -94,6 +94,7 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 				return;
 		}
 
+		$('select').material_select('destroy');
 		$('select').material_select();
 		$location.search('player', $scope.player_data.player);
 		$location.search('topn', $scope.top_n_val);

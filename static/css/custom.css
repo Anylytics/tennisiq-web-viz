@@ -119,6 +119,7 @@
     position: absolute;
     top: 230px;
     right:0;
+    z-index:5;
   }
   .history-item {
     padding: 10px;
