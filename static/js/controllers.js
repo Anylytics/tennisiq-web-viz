@@ -206,9 +206,10 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 						//getScope().highlight_scale(zscore_val).transform = "translateY(-30px)";
 					}
 					if (zscore_val>1) {
-						getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point, which means he is better than " + percentile_val + "% of the top "+top_n_val+" players";
+						getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point against "+top_n_val+", which means he is better than " + percentile_val + "% of the all players";
 					} else {
-						getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point, which means he is worse than " + (100-percentile_val) + "% of the top "+top_n_val+" players";
+						getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point against "+top_n_val+", which means he is better than " + percentile_val + "% of the all players";
+						//getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point, which means he is worse than " + (100-percentile_val) + "% of the top "+top_n_val+" players";
 					}
 					if (zscore_val==-1) {
 						getScope().hover_message = "Not enough data for this game situation";
