@@ -14,7 +14,7 @@
       <label for="first_name">Player Name</label>
     </div>
 	</div>
-	<div class="col s12 m4" data-step="2" data-intro="Use this box to select the top n players you want to compare the player to. Eg: Selecting '5' will compare the searched for player's performance against the top 5 players">
+	<div class="col s12 m4" data-step="2" data-intro="Use this box to specify the opponents you want to compare the player to. Eg: Selecting 'Top 5' will compare the searched for player's performance when competing against top 5 ranked opponents">
 		<label for="select_topn">Compared To</label>
 		<select ng-model="top_n_val" id="select_topn" ng-change="update_network()" value="{{top_n_val}}">
 			<option value="" disabled selected>Compared Against</option>
