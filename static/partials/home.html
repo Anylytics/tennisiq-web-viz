@@ -4,7 +4,7 @@
 </div>
 
 <div class="header green darken-2 white-text">
-	<h3>Tennis Players - Situational Stats <div class="question green-text text-darken-2 right animated shake" ng-click="startHelp()"> <i class="material-icons">info_outline</i></div></h3>
+	<h3>ATP Tennis - Situational Stats <div class="question green-text text-darken-2 animated shake" ng-click="startHelp()"> <i class="material-icons">info_outline</i></div></h3>
 </div>
 
 <div class="header row green lighten-4">
@@ -18,9 +18,9 @@
 		<label for="select_topn">Compared To</label>
 		<select ng-model="top_n_val" id="select_topn" ng-change="update_network()" value="{{top_n_val}}">
 			<option value="" disabled selected>Compared Against</option>
-			<option value="5">5</option>
-			<option value="10">10</option>
-			<option value="20">20</option>
+			<option value="5">Top 5</option>
+			<option value="10">Top 10</option>
+			<option value="20">Top 20</option>
 		</select>
 	</div>
 	<div class="col s12 m4" data-step="3" data-intro="Finally, choose whether you would like to view statistics for when the chosen player is serving or receiving">
@@ -57,7 +57,7 @@ Stats for
 
 <a ng-show="debug" class="waves-effect waves-light btn search" ng-click="svg_loaded(search_player)">Search</a>
 <h5>Now viewing <span class="green-text">{{player_data.player}}</span> <span ng-show="!player_data.player">___________</span>
-		compared against the top <span class="green-text">{{top_n_val}}</span> <span ng-show="top_n_val.length==0">___________</span>
+		playing against the top <span class="green-text">{{top_n_val}}</span> <span ng-show="top_n_val.length==0">___________</span>
 		when he
 		is the <span class="green-text">{{server_returner}}</span> <span ng-show="server_returner.length==0">___________</span></h5>
 <div id="network-container" ng-class="svg_class">
@@ -85,6 +85,10 @@ Steps:<input ng-model="numboxes"/>
 <div class="gradient-boxes" ng-repeat="box_rgb in boxes" ng-style="box_rgb"></div>
 <br/>
 <div class="gradient-boxes" ng-repeat="box_hsv in boxes_hsv" ng-style="box_hsv"></div>
+</div>
+
+<div class="footer">
+	<a href="http://anylytics.io/blog/novakdjokovic">To read more about this application, <span>click here</span></a>
 </div>
 <!--{{top_n_val}}
 <br/>

@@ -18,6 +18,13 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 
 	$scope.search_history = [];
 
+  window.onload = function() {
+		if (!localStorage.hasRunOnce) {
+			$scope.startHelp();
+		}
+		localStorage.hasRunOnce = true;
+	};
+
 	$scope.visit_history = function(history_object) {
 		console.log(history_object);
 		$scope.search_player = history_object.player;
@@ -206,9 +213,9 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 						//getScope().highlight_scale(zscore_val).transform = "translateY(-30px)";
 					}
 					if (zscore_val>1) {
-						getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point against "+top_n_val+", which means he is better than " + percentile_val + "% of the all players";
+						getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point against top "+top_n_val+" ranked tennis players, which means he is in the " + percentile_val + " percentile of all players";
 					} else {
-						getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point against "+top_n_val+", which means he is better than " + percentile_val + "% of the all players";
+						getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point against top "+top_n_val+" ranked tennis players, which means he is in the " + percentile_val + " percentile of all players";
 						//getScope().hover_message = player_val + " has a " + prob_val + "% chance of winning this point, which means he is worse than " + (100-percentile_val) + "% of the top "+top_n_val+" players";
 					}
 					if (zscore_val==-1) {
@@ -236,6 +243,7 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 
 		}
 		$('select').material_select();
+		Materialize.updateTextFields();
 	};
 
 	$scope.zScore2Color = function(zscore, use_hsv) {
