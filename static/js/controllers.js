@@ -15,6 +15,10 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 	$scope.animation_speed = 1000;
 	$scope.keyed_data = {};
 	$scope.just_searched = false;
+	$scope.hidesearch = $routeParams.hidesearch;
+	$scope.player1="/#/home/?player="+$routeParams.player1+"&topn=5&ser_ret=server&hidesearch=true";
+	$scope.player2="/#/home/?player="+$routeParams.player2+"&topn=5&ser_ret=server&hidesearch=true";
+
 
 	$scope.search_history = [];
 

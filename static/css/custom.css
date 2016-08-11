@@ -159,6 +159,14 @@ body { overflow:hidden; }
     font-weight: 400;
   }
 
+  .comparison-container {
+    height: calc(100vh - 85px);
+  }
+
+  .smallerImg {
+    max-height:200px;
+  }
+
 .introjs-helperNumberLayer {display:none;}
 
   .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }

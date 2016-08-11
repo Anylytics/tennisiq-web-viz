@@ -1,13 +1,13 @@
 
-<div class="hover-message {{hover_anim}}" >
+<div class="hover-message {{hover_anim}}"  ng-show="!hidesearch">
 	{{hover_message}}
 </div>
 
-<div class="header green darken-2 white-text">
+<div class="header green darken-2 white-text" ng-show="!hidesearch">
 	<h3>ATP Tennis - Situational Stats <div class="question green-text text-darken-2 animated shake" ng-click="startHelp()"> <i class="material-icons">info_outline</i></div></h3>
 </div>
 
-<div class="header row green lighten-4">
+<div class="header row green lighten-4" ng-show="!hidesearch">
 	<div class="col s12 m4" data-step="1" data-intro="Search for a player here">
     <div class="input-field">
       <input id="first_name" type="text" class="validate" ng-model="search_player">
@@ -62,9 +62,10 @@ Stats for
 		is the <span class="green-text">{{server_returner}}</span> <span ng-show="server_returner.length==0">___________</span></h5>
 <div id="network-container" ng-class="svg_class">
 </div>
-<img class="hero-img animated slideInUp" ng-src="{{player_data.player_img}}" ng-style="hero_img_side"/>
+<img class="hero-img animated slideInUp" ng-src="{{player_data.player_img}}" ng-style="hero_img_side"
+			ng-class="{smallerImg: hidesearch}"/>
 
-<div class="history-container">
+<div class="history-container" ng-show="!hidesearch">
 	<div  class="history-item green lighten-4"
 				ng-repeat="search in search_history track by $index"
 				ng-click="visit_history(search)">
@@ -87,7 +88,7 @@ Steps:<input ng-model="numboxes"/>
 <div class="gradient-boxes" ng-repeat="box_hsv in boxes_hsv" ng-style="box_hsv"></div>
 </div>
 
-<div class="footer">
+<div class="footer" ng-show="!hidesearch">
 	<a href="http://anylytics.io/blog/novakdjokovic">To read more about this application, <span>click here</span></a>
 </div>
 <!--{{top_n_val}}

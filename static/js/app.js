@@ -11,6 +11,11 @@ ngApp.config(['$routeProvider', function($routeProvider) {
         reloadOnSearch: false,
         controller: 'networkController'
       }).
+      when('/compare/', {
+        templateUrl: './static/partials/compare.html',
+        reloadOnSearch: false,
+        controller: 'networkController'
+      }).
       otherwise({
         redirectTo: '/home'
       });
