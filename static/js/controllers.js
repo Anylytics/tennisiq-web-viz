@@ -17,18 +17,18 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 	$scope.just_searched = false;
 	$scope.hidesearch = $routeParams.hidesearch;
 	if (typeof $routeParams.player1=="undefined") {
-		$scope.player1="/#/home/?player=rafael nadal&topn=5&ser_ret=server&hidesearch=true";
-		$scope.player1_row2="/#/home/?player=andy murray&topn=5&ser_ret=server&hidesearch=true";
+		$scope.player1="/tennisiq/#/home/?player=rafael nadal&topn=5&ser_ret=server&hidesearch=true";
+		$scope.player1_row2="/tennisiq/#/home/?player=andy murray&topn=5&ser_ret=server&hidesearch=true";
 	} else {
-		$scope.player1="/#/home/?player="+$routeParams.player1+"&topn=5&ser_ret=server&hidesearch=true";
-		$scope.player2_row2="/#/home/?player="+$routeParams.player1+"&topn=5&ser_ret=returner&hidesearch=true";
+		$scope.player1="/tennisiq/#/home/?player="+$routeParams.player1+"&topn=5&ser_ret=server&hidesearch=true";
+		$scope.player2_row2="/tennisiq/#/home/?player="+$routeParams.player1+"&topn=5&ser_ret=returner&hidesearch=true";
 	}
 	if (typeof $routeParams.player2=="undefined") {
-		$scope.player2="/#/home/?player=andy murray&topn=5&ser_ret=returner&hidesearch=true";
-		$scope.player2_row2="/#/home/?player=rafael nadal&topn=5&ser_ret=returner&hidesearch=true";
+		$scope.player2="/tennisiq/#/home/?player=andy murray&topn=5&ser_ret=returner&hidesearch=true";
+		$scope.player2_row2="/tennisiq/#/home/?player=rafael nadal&topn=5&ser_ret=returner&hidesearch=true";
 	} else {
-		$scope.player2="/#/home/?player="+$routeParams.player2+"&topn=5&ser_ret=returner&hidesearch=true";
-		$scope.player1_row2="/#/home/?player="+$routeParams.player2+"&topn=5&ser_ret=server&hidesearch=true";
+		$scope.player2="/tennisiq/#/home/?player="+$routeParams.player2+"&topn=5&ser_ret=returner&hidesearch=true";
+		$scope.player1_row2="/tennisiq/#/home/?player="+$routeParams.player2+"&topn=5&ser_ret=server&hidesearch=true";
 	}
 
 
