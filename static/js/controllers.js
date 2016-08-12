@@ -16,21 +16,61 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 	$scope.keyed_data = {};
 	$scope.just_searched = false;
 	$scope.hidesearch = $routeParams.hidesearch;
-	if (typeof $routeParams.player1=="undefined") {
-		$scope.player1="/tennisiq/#/home/?player=rafael nadal&topn=5&ser_ret=server&hidesearch=true";
-		$scope.player1_row2="/tennisiq/#/home/?player=andy murray&topn=5&ser_ret=server&hidesearch=true";
-	} else {
-		$scope.player1="/tennisiq/#/home/?player="+$routeParams.player1+"&topn=5&ser_ret=server&hidesearch=true";
-		$scope.player2_row2="/tennisiq/#/home/?player="+$routeParams.player1+"&topn=5&ser_ret=returner&hidesearch=true";
-	}
-	if (typeof $routeParams.player2=="undefined") {
-		$scope.player2="/tennisiq/#/home/?player=andy murray&topn=5&ser_ret=returner&hidesearch=true";
-		$scope.player2_row2="/tennisiq/#/home/?player=rafael nadal&topn=5&ser_ret=returner&hidesearch=true";
-	} else {
-		$scope.player2="/tennisiq/#/home/?player="+$routeParams.player2+"&topn=5&ser_ret=returner&hidesearch=true";
-		$scope.player1_row2="/tennisiq/#/home/?player="+$routeParams.player2+"&topn=5&ser_ret=server&hidesearch=true";
+	$scope.modalwindow = $routeParams.modalwindow;
+	var loc_prefix = '/tennisiq';
+	if (location.hostname == 'localhost') {
+		loc_prefix = '';
 	}
 
+	$scope.frame_player1 = $routeParams.player1;
+	$scope.frame_player2 = $routeParams.player2;
+
+	if (typeof $routeParams.player1=="undefined") {
+		$scope.player1_compare = "Rafael Nadal";
+		$scope.player1=loc_prefix+"/#/home/?player=Rafael Nadal&topn=5&ser_ret=server&hidesearch=true";
+		$scope.player1_row2=loc_prefix+"/#/home/?player=Andy Murray&topn=5&ser_ret=server&hidesearch=true";
+	} else {
+		$scope.player1_compare = $scope.frame_player1;
+		$scope.player1=loc_prefix+"/#/home/?player="+$scope.frame_player1+"&topn=5&ser_ret=server&hidesearch=true";
+		$scope.player2_row2=loc_prefix+"/#/home/?player="+$scope.frame_player1+"&topn=5&ser_ret=returner&hidesearch=true";
+	}
+	if (typeof $routeParams.player2=="undefined") {
+		$scope.player2_compare = "Andy Murray"
+		$scope.player2=loc_prefix+"/#/home/?player=Andy Murray&topn=5&ser_ret=returner&hidesearch=true";
+		$scope.player2_row2=loc_prefix+"/#/home/?player=Rafael Nadal&topn=5&ser_ret=returner&hidesearch=true";
+	} else {
+		$scope.player1_compare = $scope.frame_player2;
+		$scope.player2=loc_prefix+"/#/home/?player="+$scope.frame_player2+"&topn=5&ser_ret=returner&hidesearch=true";
+		$scope.player1_row2=loc_prefix+"/#/home/?player="+$scope.frame_player2+"&topn=5&ser_ret=server&hidesearch=true";
+	}
+
+	$scope.update_compare1 = function() {
+		console.log($scope.player1_compare);
+		$scope.frame_player1 = $scope.player1_compare;
+		$scope.updateP1();
+	};
+	$scope.update_compare2 = function() {
+		$scope.frame_player2 = $scope.player2_compare;
+		$scope.updateP2();
+	};
+
+	$scope.updateP1 = function() {
+		console.log($scope.frame_player1);
+		$scope.player1=loc_prefix+"/#/home/?player="+$scope.frame_player1+"&topn=5&ser_ret=server&hidesearch=true";
+		$scope.player2_row2=loc_prefix+"/#/home/?player="+$scope.frame_player1+"&topn=5&ser_ret=returner&hidesearch=true";
+		document.getElementById('iframe1').contentWindow.location.reload(true);
+		document.getElementById('iframe4').contentWindow.location.reload(true);
+		document.getElementById('modal_iframe1').contentWindow.location.reload(true);
+		document.getElementById('modal_iframe4').contentWindow.location.reload(true);
+	};
+	$scope.updateP2 = function() {
+		$scope.player2=loc_prefix+"/#/home/?player="+$scope.frame_player2+"&topn=5&ser_ret=returner&hidesearch=true";
+		$scope.player1_row2=loc_prefix+"/#/home/?player="+$scope.frame_player2+"&topn=5&ser_ret=server&hidesearch=true";
+		document.getElementById('iframe2').contentWindow.location.reload(true);
+		document.getElementById('iframe3').contentWindow.location.reload(true);
+		document.getElementById('modal_iframe2').contentWindow.location.reload(true);
+		document.getElementById('modal_iframe3').contentWindow.location.reload(true);
+	};
 
 
 	$scope.player_list = ['Novak Djokovic','Viktor Troicki','Federico Delbonis','Denis Istomin','Sam Groth','Andrey Kuznetsov','Nikoloz Basilashvili','Lukas Rosol','Dustin Brown','Thomas Fabbiano',
