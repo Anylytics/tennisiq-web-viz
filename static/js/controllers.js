@@ -16,9 +16,30 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 	$scope.keyed_data = {};
 	$scope.just_searched = false;
 	$scope.hidesearch = $routeParams.hidesearch;
-	$scope.player1="/tennisiq/#/home/?player="+$routeParams.player1+"&topn=5&ser_ret=server&hidesearch=true";
-	$scope.player2="/tennisiq/#/home/?player="+$routeParams.player2+"&topn=5&ser_ret=server&hidesearch=true";
+	if (typeof $routeParams.player1=="undefined") {
+		$scope.player1="/#/home/?player=rafael nadal&topn=5&ser_ret=server&hidesearch=true";
+		$scope.player1_row2="/#/home/?player=andy murray&topn=5&ser_ret=server&hidesearch=true";
+	} else {
+		$scope.player1="/#/home/?player="+$routeParams.player1+"&topn=5&ser_ret=server&hidesearch=true";
+		$scope.player2_row2="/#/home/?player="+$routeParams.player1+"&topn=5&ser_ret=returner&hidesearch=true";
+	}
+	if (typeof $routeParams.player2=="undefined") {
+		$scope.player2="/#/home/?player=andy murray&topn=5&ser_ret=returner&hidesearch=true";
+		$scope.player2_row2="/#/home/?player=rafael nadal&topn=5&ser_ret=returner&hidesearch=true";
+	} else {
+		$scope.player2="/#/home/?player="+$routeParams.player2+"&topn=5&ser_ret=returner&hidesearch=true";
+		$scope.player1_row2="/#/home/?player="+$routeParams.player2+"&topn=5&ser_ret=server&hidesearch=true";
+	}
 
+
+
+	$scope.player_list = ['Novak Djokovic','Viktor Troicki','Federico Delbonis','Denis Istomin','Sam Groth','Andrey Kuznetsov','Nikoloz Basilashvili','Lukas Rosol','Dustin Brown','Thomas Fabbiano',
+	'Robin Haase','Teymuraz Gabashvili','Yen-Hsun Lu','Victor Estrella Burgos','Jerzy Janowicz','Malek Jaziri','Vasek Pospisil','Grigor Dimitrov','Darian King','Guido Pella','Jack Sock','Borna Coric','Ricardas Berankis','Brian Baker','Damir Dzumhur',
+	'Thanasi Kokkinakis','Denis Kudla','Mirza Basic','Jordan Thompson','Illya Marchenko','Jan-Lennard Struff','Alberto Ramos-Vinolas',
+	'Juan Martin del Potro','Andy Murray','Rafael Nadal','David Ferrer','David Goffin','Roberto Bautista Agut','Pablo Cuevas','Benoit Paire',
+	'Thomaz Bellucci','Rogerio Dutra Silva','Joao Sousa','Radu Albot','Paolo Lorenzi','Fabio Fognini','Gilles Muller','Jo-Wilfried Tsonga','Gael Monfils',
+	'Marin Cilic','Steve Johnson','Philipp Kohlschreiber','Taro Daniel','Gilles Simon','John Millman','Yuichi Sugita','Dudi Sela','Gastao Elias',
+	'Andrej Martin','Juan Monaco','Kyle Edmund','Andreas Seppi','Evgeny Donskoy','Kei Nishikori'];
 
 	$scope.search_history = [];
 
@@ -136,6 +157,9 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 			this_server_sb_ret_color = '#e1e1e1';
 			this_server_sbd_ret_color = '#bfbfbf';
 			$scope.hero_img_side = {'right':'calc(98vw - 300px)'};
+			if ($scope.hidesearch) {
+				$scope.hero_img_side = {'right':'calc(100vw-125px)'};
+			}
 		}
 
 		d3.select("#player_server").text(server_name);

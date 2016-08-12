@@ -33,7 +33,7 @@
 	</div>
 </div>
 
-<div class="color-scale animated slideInLeft" ng-show="server_returner">
+<div class="color-scale animated slideInLeft" ng-show="server_returner&&!hidesearch">
 	<div ng-repeat="box_hsv in boxes_hsv.slice().reverse()" ng-style="box_hsv"></div>
 </div>
 
@@ -56,11 +56,12 @@ Stats for
 
 
 <a ng-show="debug" class="waves-effect waves-light btn search" ng-click="svg_loaded(search_player)">Search</a>
-<h5>Now viewing <span class="green-text">{{player_data.player}}</span> <span ng-show="!player_data.player">___________</span>
+<h5 ng-show="!hidesearch">Now viewing <span class="green-text">{{player_data.player}}</span> <span ng-show="!player_data.player">___________</span>
 		playing against the top <span class="green-text">{{top_n_val}}</span> <span ng-show="top_n_val.length==0">___________</span>
 		when he
 		is the <span class="green-text">{{server_returner}}</span> <span ng-show="server_returner.length==0">___________</span></h5>
-<div id="network-container" ng-class="svg_class">
+<h5 ng-show="hidesearch">{{player_data.player}}</h5>
+<div id="network-container" ng-class="{fullsizeSvg: hidesearch}">
 </div>
 <img class="hero-img animated slideInUp" ng-src="{{player_data.player_img}}" ng-style="hero_img_side"
 			ng-class="{smallerImg: hidesearch}"/>

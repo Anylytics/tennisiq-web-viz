@@ -160,7 +160,14 @@ body { overflow:hidden; }
   }
 
   .comparison-container {
-    height: calc(100vh - 85px);
+    height: calc(49.5vh - 85px);
+  }
+  h2 {
+    text-align:center;
+  }
+
+  .fullsizeSvg >svg {
+      height: calc(100vh - 70px);
   }
 
   .smallerImg {
