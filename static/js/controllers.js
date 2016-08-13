@@ -27,21 +27,21 @@ ngAppControllers.controller('networkController', ['$scope','$http','$routeParams
 
 	if (typeof $routeParams.player1=="undefined") {
 		$scope.player1_compare = "Rafael Nadal";
-		$scope.player1=loc_prefix+"/#/home/?player=Rafael Nadal&topn=5&ser_ret=server&hidesearch=true";
-		$scope.player1_row2=loc_prefix+"/#/home/?player=Andy Murray&topn=5&ser_ret=server&hidesearch=true";
+		$scope.player1=loc_prefix+"/#/home/?player=Rafael Nadal&topn=20&ser_ret=server&hidesearch=true";
+		$scope.player1_row2=loc_prefix+"/#/home/?player=Andy Murray&topn=20&ser_ret=server&hidesearch=true";
 	} else {
 		$scope.player1_compare = $scope.frame_player1;
-		$scope.player1=loc_prefix+"/#/home/?player="+$scope.frame_player1+"&topn=5&ser_ret=server&hidesearch=true";
-		$scope.player2_row2=loc_prefix+"/#/home/?player="+$scope.frame_player1+"&topn=5&ser_ret=returner&hidesearch=true";
+		$scope.player1=loc_prefix+"/#/home/?player="+$scope.frame_player1+"&topn=20&ser_ret=server&hidesearch=true";
+		$scope.player2_row2=loc_prefix+"/#/home/?player="+$scope.frame_player1+"&topn=20&ser_ret=returner&hidesearch=true";
 	}
 	if (typeof $routeParams.player2=="undefined") {
 		$scope.player2_compare = "Andy Murray"
-		$scope.player2=loc_prefix+"/#/home/?player=Andy Murray&topn=5&ser_ret=returner&hidesearch=true";
-		$scope.player2_row2=loc_prefix+"/#/home/?player=Rafael Nadal&topn=5&ser_ret=returner&hidesearch=true";
+		$scope.player2=loc_prefix+"/#/home/?player=Andy Murray&topn=20&ser_ret=returner&hidesearch=true";
+		$scope.player2_row2=loc_prefix+"/#/home/?player=Rafael Nadal&topn=20&ser_ret=returner&hidesearch=true";
 	} else {
 		$scope.player1_compare = $scope.frame_player2;
-		$scope.player2=loc_prefix+"/#/home/?player="+$scope.frame_player2+"&topn=5&ser_ret=returner&hidesearch=true";
-		$scope.player1_row2=loc_prefix+"/#/home/?player="+$scope.frame_player2+"&topn=5&ser_ret=server&hidesearch=true";
+		$scope.player2=loc_prefix+"/#/home/?player="+$scope.frame_player2+"&topn=20&ser_ret=returner&hidesearch=true";
+		$scope.player1_row2=loc_prefix+"/#/home/?player="+$scope.frame_player2+"&topn=20&ser_ret=server&hidesearch=true";
 	}
 
 	$scope.update_compare1 = function() {
